@@ -36,3 +36,6 @@ This project requires Python 3.12 or higher. The dependencies are listed in `req
 pip install -r requirements.txt
 ```
 
+## Data Exploration
+
+[Data exploration notebook](notebooks/data_exploration.ipynb) contains the data exploration and visualization code. You can run it using Jupyter Notebook or Jupyter Lab.
