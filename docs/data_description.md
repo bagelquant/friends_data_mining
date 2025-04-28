@@ -27,5 +27,5 @@ Sentiment analysis datasets: [Kaggle link](https://www.kaggle.com/datasets/ekrem
 
 ## Acknowledgements
 
-The raw transcripts of every episode were originally scraped from here: https://fangj.github.io/friends/.
+The raw transcripts of every episode were originally scraped from here: [Friends quotes](https://fangj.github.io/friends/).
 Additional work cleaning up the data and removing invalid rows was done by [Jorge Nachtigall](https://www.kaggle.com/jorgenachtigall)
