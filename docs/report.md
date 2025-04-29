@@ -64,6 +64,61 @@ Additional work cleaning up the data and removing invalid rows was done by [Jorg
 
 ## Missing data handling on sentiment analysis datasets
 
+
+# Handling Missing Data
+
+## Loading and Cleaning the Datasets
+
+We loaded four major sentiment lexicons: AFINN, Bing Liu’s Opinion Lexicon, the NRC Emotion Lexicon, and the Loughran-McDonald Financial Sentiment Dictionary. Each of these datasets contained sentiment information for various English words. We merged the four lexicons into a single DataFrame. Some words appeared only in certain dictionaries. As a result, the unified DataFrame had multiple columns: `word`, `value` (AFINN score), `sentiment` (Loughran sentiment), `sentiment_x` (Bing sentiment), and `sentiment_y` (NRC emotional categories).
+
+## Filling Missing Data Using GloVe Embeddings
+
+To handle all missing fields — `value`, `sentiment_x`, and `sentiment_y` — we adopted a unified strategy based on semantic similarity using pre-trained GloVe word embeddings. For missing `value` scores, we first loaded the GloVe 6B 200-dimensional embeddings, and for missing `sentiment_x` and `sentiment_y`, we used GloVe Twitter 27B embeddings, as these are more suited for emotion and opinion words found in informal text.
+
+For each missing entry, we first checked whether the word’s GloVe embedding was available. If it was, we calculated its similarity to all words that had known values or sentiment labels, using **cosine similarity** — a metric that measures the cosine of the angle between two vectors and captures semantic closeness regardless of word frequency or word form. Specifically, the cosine similarity between two vectors \( A \) and \( B \) is given by:
+
+`cosine_similarity(A, B) = (A · B) / (||A|| × ||B||)`
+
+where \( A \cdot B \) is the dot product, and \( ||A|| \) and \( ||B|| \) are their magnitudes.
+
+Using this method, for each missing `value`, we found the closest word and assigned its value score; for each missing `sentiment_x`, we assigned the most similar known sentiment label; and for each missing `sentiment_y`, which could have multiple emotions, we assigned the relevant list of emotion labels from the most semantically similar known word. After completing the imputations, we rounded the filled `value` scores to the nearest integer, clipped them within [-5, 5] for consistency, and handled the multi-label structure in `sentiment_y` carefully by later exploding it for analysis.
+
+## Deduplication and Final Cleaning
+
+After imputing missing data, we cleaned the dataset further by removing duplicate words, ensuring that each word appeared only once with its enriched sentiment information. This made the dataset structured, easy to handle, and ready for visualization and further use.
+
+## Exploratory Data Analysis and Visualization
+
+### Value Distribution Across Sentiments (Loughran)
+
+We analyzed the distribution of AFINN `value` scores across different Loughran sentiment labels. Positive sentiments had positive values, and negative or uncertainty-related sentiments had negative values.
+
+![Figure 1: Value Distribution Across Sentiments (Loughran)](../data/Sentiment1.png)
+
+### Value Distribution Across Sentiment_X (Bing)
+
+We visualized how the AFINN `value` scores are distributed across positive and negative sentiment labels from Bing. There was a clear separation between positive and negative classes, validating the semantic consistency.
+
+![Figure 2: Value Distribution Across Sentiment_X (Bing)](../data/sentiment2.png)
+
+### Sentiment vs Sentiment_X Relationship
+
+We compared the categorical relationship between Loughran sentiments and Bing's positive/negative classification. As expected, positive Loughran words mostly mapped to Bing positive, and negative/uncertain terms mapped to Bing negative.
+
+![Figure 3: Sentiment vs Sentiment_X](../data/sentiment3.png)
+
+### Value Distribution Across Sentiment_Y (NRC Emotions)
+
+The boxplot showed that negative emotions (fear, anger, sadness) had lower `value` scores, and positive emotions (joy, trust, anticipation) had higher `value` scores, confirming correct imputation.
+
+![Figure 4: Value Distribution Across Sentiment_Y (NRC Emotions)](../data/sentiment4.png)
+
+### Sentiment_Y vs Sentiment_X Alignment
+
+Finally, the comparison of NRC emotional sentiments (`sentiment_y`) and Bing polarity (`sentiment_x`) revealed logical associations. Negative emotions aligned with negative sentiment, and positive emotions aligned with positive sentiment.
+
+![Figure 5: Sentiment_Y vs Sentiment_X](../data/sentiment5.png)
+
 ## Sentiment analysis
 
 ## Relationship analysis based on association rules
