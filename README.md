@@ -39,3 +39,7 @@ pip install -r requirements.txt
 ## Data Exploration
 
 [Data exploration notebook](notebooks/data_exploration.ipynb) contains the data exploration and visualization code. You can run it using Jupyter Notebook or Jupyter Lab.
+
+## Others
+
+- [Slides link](https://docs.google.com/presentation/d/1MZdga-3eWi6rnw_6MIufVT4SMkl_2MSLhlnL31vbcto/edit?usp=sharing)

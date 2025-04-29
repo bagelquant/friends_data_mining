@@ -64,8 +64,6 @@ Additional work cleaning up the data and removing invalid rows was done by [Jorg
 
 ## Missing data handling on sentiment analysis datasets
 
-
-
 ### Loading and Cleaning the Datasets
 
 We loaded four major sentiment lexicons: AFINN, Bing Liu’s Opinion Lexicon, the NRC Emotion Lexicon, and the Loughran-McDonald Financial Sentiment Dictionary. Each of these datasets contained sentiment information for various English words. We merged the four lexicons into a single DataFrame. Some words appeared only in certain dictionaries. As a result, the unified DataFrame had multiple columns: `word`, `value` (AFINN score), `sentiment` (Loughran sentiment), `sentiment_x` (Bing sentiment), and `sentiment_y` (NRC emotional categories).
@@ -169,8 +167,6 @@ The sum of proportions for NRC emotions equals 1.
 
 If no words matched in a quote for a dictionary, the score was set to 0.
 
----
-
 ### Sentiment Analysis Based on AFINN Quote Scores
 
 We analyzed AFINN sentiment scores across seasons for each character, focusing on:
@@ -180,12 +176,9 @@ We analyzed AFINN sentiment scores across seasons for each character, focusing o
 
 #### 1. Average AFINN Score Across Seasons
 
->![Figure 6: Average AFINN score of each character across seasons (Bar Chart)](../figures/AFINN_mean_bar.png)
+![Figure 6: Average AFINN score of each character across seasons (Bar Chart)](../figures/AFINN_mean_bar.png)
 
-
-
->![Figure 7: Average AFINN score of each character across seasons (Line Plot)](../figures/AFINN_mean_line.png)
-
+![Figure 7: Average AFINN score of each character across seasons (Line Plot)](../figures/AFINN_mean_line.png)
 
 Observations:
 
@@ -197,10 +190,9 @@ Observations:
 
 #### 2. Standard Deviation of AFINN Score Across Seasons
 
+![Figure 8: Standard deviation of AFINN score across seasons (Bar Chart)  ](../figures/AFINN_std_bar.png)
 
->![Figure 8: Standard deviation of AFINN score across seasons (Bar Chart)  ](../figures/AFINN_std_bar.png)
-
->![Figure 9: Standard deviation of AFINN score across seasons (Line Plot)   ](../figures/AFINN_std_line.png)
+![Figure 9: Standard deviation of AFINN score across seasons (Line Plot)   ](../figures/AFINN_std_line.png)
 
 Observations:
 
@@ -218,8 +210,6 @@ Observations:
 - Ross's sentiment swings reflect his chaotic romantic journey.
 - Chandler and Joey remain steady emotionally.
 
----
-
 ### Sentiment Distribution Based on Bing Liu's Dictionary
 
 >![Figure 10: Positive and Negative sentiment proportions per character (Bing Dictionary Analysis)](../figures/BingLiu.png)
@@ -232,22 +222,15 @@ Observations:
 - Monica's mix of affection and competitiveness results in a balanced sentiment profile.
 - Ross shows more positivity than expected, possibly due to his earnest attempts at connection despite his relationship failures.
 
----
-
-### Summary
+**Summary:**
 
 - Joey and Rachel reflect consistent optimism.
 - Chandler stands out for emotional negativity.
 - Phoebe, Monica, and Ross show a more balanced emotional profile.
 
----
-
 ### Sentiment Distribution Based on Loughran-McDonald Dictionary
 
 >![Figure 11: Sentiment category proportions per character (Loughran-McDonald Dictionary Analysis)](../figures/LoughranMcDonald.png)
-
-
-Observations:
 
 Observations:
 
@@ -257,22 +240,16 @@ Observations:
 - Chandler and Ross show slightly higher constraining and litigious tones, fitting their involvement in structured and stressful situations.
 - Rachel shows a higher superfluous proportion, consistent with her expressive and emotional communication style.
 
----
-
-### Summary
+**Summary:**
 
 - Ross shows more negativity and uncertainty.
 - Joey and Phoebe show strong positivity and spontaneity.
 - Monica and Chandler reflect pressure and structure.
 - Rachel shows heightened emotional expression.
 
----
-
 ### Sentiment Distribution Based on NRC Emotion Lexicon
 
-
 >![Figure 12: Emotion category proportions per character (NRC Dictionary Analysis)](../figures/NRC.png)
-
 
 Observations:
 
@@ -283,17 +260,13 @@ Observations:
 - Anger and disgust are generally low, slightly higher in Monica and Chandler during tense scenes.
 - Surprise and anticipation are evenly distributed, showing the dynamic storytelling style of the series.
 
----
-
-### Summary
+**Summary:**
 
 - Rachel, Ross, and Phoebe show broad emotional ranges tied to personal growth.
 - Joey and Phoebe express strong joy and spontaneity.
 - Monica and Ross reveal deeper emotional tensions.
 - Friends presents a nuanced portrayal of emotions beyond its comedic surface.
 
-
----
 ### K-Means Clustering on Merged Sentiment Features
 
 To explore underlying sentiment patterns across characters, we applied K-Means clustering to a feature set constructed by merging sentiment outputs from all four dictionaries: AFINN, Bing Liu, Loughran-McDonald, and NRC Emotion Lexicon.
@@ -305,7 +278,7 @@ Each row in the dataset represents a character, and each column corresponds to a
 - Bing Liu: positive_y, negative_y
 - Loughran-McDonald: negative, positive, uncertainty, constraining, litigious, superfluous
 
-We standardized the features and applied K-Means clustering with \( k = 4 \), grouping the main characters based on their overall sentiment similarity.
+We standardized the features and applied K-Means clustering with $k = 4$, grouping the main characters based on their overall sentiment similarity.
 
 > Character Cluster Assignments:
 
@@ -362,9 +335,7 @@ We standardized the features and applied K-Means clustering with \( k = 4 \), gr
 
   Both characters are light-hearted and emotionally open. Their optimistic and spontaneous behavior is consistently reflected in their sentiment scores.
 
----
-
-### Summary
+**Summary:**
 
 The clustering results reveal distinct emotional profiles among the main characters in Friends:
 
@@ -375,8 +346,6 @@ The clustering results reveal distinct emotional profiles among the main charact
 
 These groupings not only reflect patterns identified through sentiment features, but also align with the emotional trajectories established through the show's narrative.
 
-
----
 ### PCA Visualization of Character Clustering
 
 To visualize emotional similarities among characters, we applied principal component analysis (PCA) to reduce the 20-dimensional sentiment feature space into two principal components.
@@ -386,11 +355,7 @@ The features used included combined outputs from the AFINN, Bing Liu, Loughran-M
 - Main characters: Joey, Phoebe, Monica, Chandler, Ross, Rachel  
 - Supporting roles: Susan, Carol, Frank, Janice, Richard, David, Mike, Tag, Gunther, Mr. Geller, Mrs. Geller
 
-
-
 >![Figure 13: PCA Scatter Plot of Character Emotional Profiles  ](../figures/PCA.png)
-
----
 
 #### Interpretation of the PCA Plot
 
@@ -413,8 +378,6 @@ The PCA plot provides a spatial representation of emotional similarity. Characte
   This corresponds with his fluctuating emotional tone, driven by multiple failed relationships, episodes of jealousy, and frequent interpersonal conflict.  
   His variability is also supported by his relatively high standard deviation in AFINN scores.
 
----
-
 4. Supporting characters and their emotional positioning
 
 - Carol and Susan are more distant from the core group.  
@@ -433,9 +396,7 @@ The PCA plot provides a spatial representation of emotional similarity. Characte
   Janice’s heightened emotional expression and distinctive speaking style may contribute to her separation.  
   Frank shares some emotional similarity with Phoebe but plays a less central narrative role.
 
----
-
-### Summary
+### Summary of PCA Results
 
 The PCA visualization reinforces previous clustering results:
 
@@ -444,13 +405,9 @@ The PCA visualization reinforces previous clustering results:
 - Ross shows greater variability, consistent with his complex personal narrative.
 - Supporting characters are more dispersed, and their distance reflects both narrative relevance and emotional distinction.
 
----
-
-### Conclusion
+### Conclusion on sentiment analysis
 
 This study conducted sentiment analysis using four lexicons—AFINN, Bing Liu, Loughran-McDonald, and NRC—and applied K-means clustering and principal component analysis to examine emotional profiles in the television series Friends. The results show that the six main characters maintain a highly correlated emotional structure across different sentiment dimensions, as evidenced by their proximity in both clustering and PCA visualization. Despite narrative differences in individual arcs, their emotional distributions remain consistently aligned, supporting the idea that their character development was intentionally designed to maintain group cohesion. This provides a quantitative basis for understanding how emotional dynamics contribute to the show's long-standing audience engagement and cohesive group identity.
-
-
 
 ## Relationship analysis based on association rules
 
@@ -479,7 +436,7 @@ This approach is not perfect, since some conversations may not have greetings, i
 
 Here is a sample of the conversation, and the characters in this conversation:
 
-| Conversation | Characters                                                                |
+| index | Characters                                                                |
 |-------|----------------------------------------------------------------------|
 | 0     | [chandler, joey, monica, phoebe, rachel, ross]                       |
 | 1     | [chandler, joey, monica, phoebe, ross]                               |
@@ -592,4 +549,22 @@ For Chandler and Monica couples, we could clearly see that they have a strong as
 
 ## Conclusion
 
-Balabala
+### Result Summary
+
+This project successfully applied data mining techniques to analyze the relationships and emotional dynamics of the main characters in the sitcom F.R.I.E.N.D.S. Key findings include:
+
+- **Sentiment Analysis**: The sentiment analysis revealed distinct emotional profiles for each character. Rachel and Phoebe showed increasing positivity over time, while Monica exhibited the most emotional fluctuation. Ross's sentiment swings reflected his chaotic romantic journey, and Joey and Chandler remained emotionally steady.
+- **Clustering and PCA**: K-means clustering grouped characters based on their sentiment profiles, highlighting Joey and Phoebe's shared positivity, Monica and Chandler's emotional intensity, and Ross's unique variability. PCA visualization further confirmed these groupings and provided insights into supporting characters' emotional positioning.
+- **Association Rules**: The association rule analysis underscored Joey's role as a social connector, with strong associations across the group. Romantic arcs like Ross and Rachel, and Monica and Chandler, were also highlighted. Phoebe's distinct personality was evident in her relatively lower association with other characters.
+
+### Future Improvements
+
+While the project yielded valuable insights, there are areas for improvement:
+
+1. **Enhanced Conversation Segmentation**: The current method of using greetings to define conversation boundaries could be refined. Incorporating natural language processing (NLP) techniques or training a model specifically for this task may improve accuracy.
+2. **Expanded Sentiment Analysis**: Additional sentiment lexicons or context-aware models like BERT could provide deeper insights into the emotional nuances of quotes.
+3. **Temporal Analysis**: Analyzing how relationships and sentiments evolve over time could offer a dynamic perspective on character development.
+4. **Incorporating Visual and Audio Data**: Extending the analysis to include visual and audio elements, such as facial expressions or tone of voice, could provide a more comprehensive understanding of character interactions.
+5. **Validation with External Data**: Comparing findings with audience surveys or expert opinions could validate the results and provide additional context.
+
+By addressing these areas, future studies can build on this foundation to uncover even deeper insights into the emotional and relational dynamics of F.R.I.E.N.D.S.
