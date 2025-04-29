@@ -65,13 +65,12 @@ Additional work cleaning up the data and removing invalid rows was done by [Jorg
 ## Missing data handling on sentiment analysis datasets
 
 
-# Handling Missing Data
 
-## Loading and Cleaning the Datasets
+### Loading and Cleaning the Datasets
 
 We loaded four major sentiment lexicons: AFINN, Bing Liu’s Opinion Lexicon, the NRC Emotion Lexicon, and the Loughran-McDonald Financial Sentiment Dictionary. Each of these datasets contained sentiment information for various English words. We merged the four lexicons into a single DataFrame. Some words appeared only in certain dictionaries. As a result, the unified DataFrame had multiple columns: `word`, `value` (AFINN score), `sentiment` (Loughran sentiment), `sentiment_x` (Bing sentiment), and `sentiment_y` (NRC emotional categories).
 
-## Filling Missing Data Using GloVe Embeddings
+### Filling Missing Data Using GloVe Embeddings
 
 To handle all missing fields — `value`, `sentiment_x`, and `sentiment_y` — we adopted a unified strategy based on semantic similarity using pre-trained GloVe word embeddings. For missing `value` scores, we first loaded the GloVe 6B 200-dimensional embeddings, and for missing `sentiment_x` and `sentiment_y`, we used GloVe Twitter 27B embeddings, as these are more suited for emotion and opinion words found in informal text.
 
@@ -83,43 +82,375 @@ where \( A \cdot B \) is the dot product, and \( ||A|| \) and \( ||B|| \) are th
 
 Using this method, for each missing `value`, we found the closest word and assigned its value score; for each missing `sentiment_x`, we assigned the most similar known sentiment label; and for each missing `sentiment_y`, which could have multiple emotions, we assigned the relevant list of emotion labels from the most semantically similar known word. After completing the imputations, we rounded the filled `value` scores to the nearest integer, clipped them within [-5, 5] for consistency, and handled the multi-label structure in `sentiment_y` carefully by later exploding it for analysis.
 
-## Deduplication and Final Cleaning
+### Deduplication and Final Cleaning
 
 After imputing missing data, we cleaned the dataset further by removing duplicate words, ensuring that each word appeared only once with its enriched sentiment information. This made the dataset structured, easy to handle, and ready for visualization and further use.
 
-## Exploratory Data Analysis and Visualization
+### Exploratory Data Analysis and Visualization
 
-### Value Distribution Across Sentiments (Loughran)
+#### Value Distribution Across Sentiments (Loughran)
 
 We analyzed the distribution of AFINN `value` scores across different Loughran sentiment labels. Positive sentiments had positive values, and negative or uncertainty-related sentiments had negative values.
 
-![Figure 1: Value Distribution Across Sentiments (Loughran)](../data/Sentiment1.png)
+![Figure 1: Value Distribution Across Sentiments (Loughran)](../figures/Sentiment1.png)
 
-### Value Distribution Across Sentiment_X (Bing)
+#### Value Distribution Across Sentiment_X (Bing)
 
 We visualized how the AFINN `value` scores are distributed across positive and negative sentiment labels from Bing. There was a clear separation between positive and negative classes, validating the semantic consistency.
 
-![Figure 2: Value Distribution Across Sentiment_X (Bing)](../data/sentiment2.png)
+![Figure 2: Value Distribution Across Sentiment_X (Bing)](../figures/sentiment2.png)
 
-### Sentiment vs Sentiment_X Relationship
+#### Sentiment vs Sentiment_X Relationship
 
 We compared the categorical relationship between Loughran sentiments and Bing's positive/negative classification. As expected, positive Loughran words mostly mapped to Bing positive, and negative/uncertain terms mapped to Bing negative.
 
-![Figure 3: Sentiment vs Sentiment_X](../data/sentiment3.png)
+![Figure 3: Sentiment vs Sentiment_X](../figures/sentiment3.png)
 
-### Value Distribution Across Sentiment_Y (NRC Emotions)
+#### Value Distribution Across Sentiment_Y (NRC Emotions)
 
 The boxplot showed that negative emotions (fear, anger, sadness) had lower `value` scores, and positive emotions (joy, trust, anticipation) had higher `value` scores, confirming correct imputation.
 
-![Figure 4: Value Distribution Across Sentiment_Y (NRC Emotions)](../data/sentiment4.png)
+![Figure 4: Value Distribution Across Sentiment_Y (NRC Emotions)](../figures/sentiment4.png)
 
-### Sentiment_Y vs Sentiment_X Alignment
+#### Sentiment_Y vs Sentiment_X Alignment
 
 Finally, the comparison of NRC emotional sentiments (`sentiment_y`) and Bing polarity (`sentiment_x`) revealed logical associations. Negative emotions aligned with negative sentiment, and positive emotions aligned with positive sentiment.
 
-![Figure 5: Sentiment_Y vs Sentiment_X](../data/sentiment5.png)
+![Figure 5: Sentiment_Y vs Sentiment_X](../figures/sentiment5.png)
 
 ## Sentiment analysis
+
+### Sentiment Feature Construction
+
+We constructed sentiment features using four different sentiment lexicons:
+
+- AFINN: assigns scores between -5 to 5.
+- Bing: assigns positive or negative labels.
+- Loughran: financial sentiment dictionary.
+- NRC: associates words with various emotions.
+
+For each quote, we tokenized the text and matched the words with each sentiment dictionary. Then, the sentiment scores were calculated as the average occurrence across matched words.
+
+Specifically:
+
+- For AFINN:
+
+$$
+\text{AFINN\_score} = \frac{\sum \text{AFINN}(word)}{\text{number of matched words}}
+$$
+
+- For Bing, we computed the proportion of positive and negative classifications:
+
+$$
+\text{Bing\_positive\_proportion} = \frac{\text{number of positive words}}{\text{total number of matched words}}
+$$
+
+$$
+\text{Bing\_negative\_proportion} = \frac{\text{number of negative words}}{\text{total number of matched words}}
+$$
+
+The sum of negative proportion and positive proportion for Bing categories equals 1.
+
+- For Loughran, we computed the proportion of each classification category:
+
+$$
+\text{Category\_proportion} = \frac{\text{number of words classified into category}}{\text{total number of matched words}}
+$$
+
+where categories are: constraining, litigious, negative, positive, superfluous, and uncertainty. The sum of proportions for Loughran categories equals 1.
+
+- For NRC, the score for each emotion (anger, joy, trust, etc.) was calculated as:
+
+$$
+\text{Category\_proportion} = \frac{\text{number of words classified into category}}{\text{total number of matched words}}
+$$
+
+The sum of proportions for NRC emotions equals 1.
+
+If no words matched in a quote for a dictionary, the score was set to 0.
+
+---
+
+### Sentiment Analysis Based on AFINN Quote Scores
+
+We analyzed AFINN sentiment scores across seasons for each character, focusing on:
+
+- Average scores (Bar and Line Charts)
+- Standard deviation (Bar and Line Charts)
+
+#### 1. Average AFINN Score Across Seasons
+
+>![Figure 6: Average AFINN score of each character across seasons (Bar Chart)](../figures/AFINN_mean_bar.png)
+
+
+
+>![Figure 7: Average AFINN score of each character across seasons (Line Plot)](../figures/AFINN_mean_line.png)
+
+
+Observations:
+
+- Rachel shows a noticeable upward trend starting from Season 6, peaking in Season 10. This coincides with her professional success at Ralph Lauren and her decision to stay in New York with Ross and Emma in the finale.
+- Phoebe's scores steadily increase after Season 5, aligning with her relationship with Mike Hannigan and their eventual marriage.
+- Monica's average sentiment dips around Seasons 7 and 8, corresponding with emotionally intense arcs such as infertility struggles and the adoption storyline.
+- Ross fluctuates across seasons, reflecting his unstable relationships, including divorces from Carol and Emily.
+- Chandler and Joey display relatively consistent scores, reflecting Chandler's sarcastic yet supportive nature and Joey's role as comic relief.
+
+#### 2. Standard Deviation of AFINN Score Across Seasons
+
+
+>![Figure 8: Standard deviation of AFINN score across seasons (Bar Chart)  ](../figures/AFINN_std_bar.png)
+
+>![Figure 9: Standard deviation of AFINN score across seasons (Line Plot)   ](../figures/AFINN_std_line.png)
+
+Observations:
+
+- Monica shows the highest volatility, especially in Seasons 2 and 9. These periods align with her breakup with Richard and the adoption process with Chandler.
+- Rachel's variability increases in the later seasons, particularly in Season 10, reflecting her decision between Paris and Ross.
+- Ross maintains a moderate but consistent level of sentiment variability, associated with his frequent romantic challenges.
+- Chandler and Joey remain emotionally stable, matching Chandler's reliable humor and Joey's easygoing personality.
+
+---
+
+### Summary
+
+- Rachel and Phoebe become more positive and emotionally expressive over time.
+- Monica shows the most emotional fluctuation, consistent with her life transitions.
+- Ross's sentiment swings reflect his chaotic romantic journey.
+- Chandler and Joey remain steady emotionally.
+
+---
+
+### Sentiment Distribution Based on Bing Liu's Dictionary
+
+>![Figure 10: Positive and Negative sentiment proportions per character (Bing Dictionary Analysis)](../figures/BingLiu.png)
+
+Observations:
+
+- Rachel and Joey exhibit the highest positive sentiment. Rachel's emotional arc, from a runaway bride to a successful career woman, mirrors her rising positivity. Joey's cheerful and naive nature adds to his high positivity.
+- Chandler has the highest negative sentiment, consistent with his sarcastic humor and occasional struggles with self-esteem.
+- Phoebe balances positive energy with occasional dark humor, often referencing her traumatic past.
+- Monica's mix of affection and competitiveness results in a balanced sentiment profile.
+- Ross shows more positivity than expected, possibly due to his earnest attempts at connection despite his relationship failures.
+
+---
+
+### Summary
+
+- Joey and Rachel reflect consistent optimism.
+- Chandler stands out for emotional negativity.
+- Phoebe, Monica, and Ross show a more balanced emotional profile.
+
+---
+
+### Sentiment Distribution Based on Loughran-McDonald Dictionary
+
+>![Figure 11: Sentiment category proportions per character (Loughran-McDonald Dictionary Analysis)](../figures/LoughranMcDonald.png)
+
+
+Observations:
+
+Observations:
+
+- Negative sentiment dominates overall, especially for Ross, reflecting his personal struggles.
+- Joey and Phoebe lead in positive sentiment, consistent with their cheerful personas.
+- Uncertainty is notable for Monica and Phoebe, reflecting Monica's perfectionism and Phoebe's unpredictability.
+- Chandler and Ross show slightly higher constraining and litigious tones, fitting their involvement in structured and stressful situations.
+- Rachel shows a higher superfluous proportion, consistent with her expressive and emotional communication style.
+
+---
+
+### Summary
+
+- Ross shows more negativity and uncertainty.
+- Joey and Phoebe show strong positivity and spontaneity.
+- Monica and Chandler reflect pressure and structure.
+- Rachel shows heightened emotional expression.
+
+---
+
+### Sentiment Distribution Based on NRC Emotion Lexicon
+
+
+>![Figure 12: Emotion category proportions per character (NRC Dictionary Analysis)](../figures/NRC.png)
+
+
+Observations:
+
+- Positive sentiment is high across all characters, with Ross and Rachel leading.
+- Joey and Phoebe show strong joy and surprise, consistent with their lively and spontaneous behavior.
+- Chandler shows higher trust and anticipation, reflecting his emotional growth, especially through his relationship with Monica.
+- Monica and Ross show more sadness and fear, reflecting deeper emotional conflicts.
+- Anger and disgust are generally low, slightly higher in Monica and Chandler during tense scenes.
+- Surprise and anticipation are evenly distributed, showing the dynamic storytelling style of the series.
+
+---
+
+### Summary
+
+- Rachel, Ross, and Phoebe show broad emotional ranges tied to personal growth.
+- Joey and Phoebe express strong joy and spontaneity.
+- Monica and Ross reveal deeper emotional tensions.
+- Friends presents a nuanced portrayal of emotions beyond its comedic surface.
+
+
+---
+### K-Means Clustering on Merged Sentiment Features
+
+To explore underlying sentiment patterns across characters, we applied K-Means clustering to a feature set constructed by merging sentiment outputs from all four dictionaries: AFINN, Bing Liu, Loughran-McDonald, and NRC Emotion Lexicon.
+
+Each row in the dataset represents a character, and each column corresponds to a normalized sentiment or emotion score. The final feature set contains 20 dimensions:
+
+- AFINN score
+- NRC emotions: negative, sadness, fear, disgust, anticipation, positive, anger, trust, surprise, joy
+- Bing Liu: positive_y, negative_y
+- Loughran-McDonald: negative, positive, uncertainty, constraining, litigious, superfluous
+
+We standardized the features and applied K-Means clustering with \( k = 4 \), grouping the main characters based on their overall sentiment similarity.
+
+> Character Cluster Assignments:
+
+| Character | Cluster |
+|-----------|---------|
+| Joey      | 3       |
+| Phoebe    | 3       |
+| Monica    | 1       |
+| Chandler  | 1       |
+| Ross      | 2       |
+| Rachel    | 0       |
+
+---
+
+#### Cluster Interpretation
+
+- Cluster 0: Rachel
+
+  Rachel forms her own distinct cluster. Her emotional profile is characterized by:
+
+  - A high AFINN sentiment score
+  - Strong scores in NRC categories such as joy, trust, and anticipation
+  - Moderate emotional variability
+  - Relatively high use of expressive language, as indicated by her superfluous score in the Loughran-McDonald dictionary
+
+  This is consistent with her development throughout the series—from a dependent character to an independent professional with emotional depth.
+
+- Cluster 1: Monica and Chandler
+
+  Monica and Chandler are grouped together, which reflects:
+
+  - Emotionally balanced but intense profiles
+  - Slightly higher levels of anger, fear, and legalistic or constrained language
+  - Lower overall joy compared to other main characters
+
+  This cluster highlights the emotional challenges they face together, including infertility and adoption, and the presence of stress and structure in their personalities.
+
+- Cluster 2: Ross
+
+  Ross is placed in a separate cluster, primarily due to:
+
+  - High negative sentiment across multiple lexicons
+  - Elevated sadness, fear, and uncertainty scores
+  - Moderate levels of joy and trust
+
+  These characteristics align with his emotionally unstable narrative, including divorces, jealousy, and strained relationships.
+
+- Cluster 3: Joey and Phoebe
+
+  Joey and Phoebe are clustered together due to:
+
+  - High levels of joy, surprise, and positivity
+  - Consistently low levels of negative emotions such as anger, fear, and sadness
+
+  Both characters are light-hearted and emotionally open. Their optimistic and spontaneous behavior is consistently reflected in their sentiment scores.
+
+---
+
+### Summary
+
+The clustering results reveal distinct emotional profiles among the main characters in Friends:
+
+- Rachel is emotionally expressive and distinct from the others.
+- Monica and Chandler are grouped due to their shared emotional intensity and structured communication styles.
+- Ross forms a separate group due to his higher emotional variability and negative sentiment.
+- Joey and Phoebe share a strongly positive and consistent emotional profile.
+
+These groupings not only reflect patterns identified through sentiment features, but also align with the emotional trajectories established through the show's narrative.
+
+
+---
+### PCA Visualization of Character Clustering
+
+To visualize emotional similarities among characters, we applied principal component analysis (PCA) to reduce the 20-dimensional sentiment feature space into two principal components.
+
+The features used included combined outputs from the AFINN, Bing Liu, Loughran-McDonald, and NRC dictionaries. PCA was performed on both the main characters and a group of notable supporting roles, including:
+
+- Main characters: Joey, Phoebe, Monica, Chandler, Ross, Rachel  
+- Supporting roles: Susan, Carol, Frank, Janice, Richard, David, Mike, Tag, Gunther, Mr. Geller, Mrs. Geller
+
+
+
+>![Figure 13: PCA Scatter Plot of Character Emotional Profiles  ](../figures/PCA.png)
+
+---
+
+#### Interpretation of the PCA Plot
+
+The PCA plot provides a spatial representation of emotional similarity. Characters positioned close together have similar sentiment profiles across the four dictionaries.
+
+1. Main character groupings
+
+- Rachel, Monica, Chandler, Phoebe, Joey, and Ross are clustered near the center of the plot.  
+  This reflects a balanced emotional tone shared among the main characters, likely a result of their frequent interactions and shared narrative arcs.  
+  Monica and Chandler show slight deviation from others, possibly reflecting the emotional complexity of their relationship, including experiences such as infertility and adoption.
+
+2. Joey and Phoebe: close emotional alignment
+
+- Joey and Phoebe appear very close on the plot, which supports the results from K-means clustering.  
+  Both are characterized by high positivity, spontaneity, and light-heartedness, often providing comic relief throughout the series.
+
+3. Ross: slight separation
+
+- Ross is positioned slightly away from the core cluster.  
+  This corresponds with his fluctuating emotional tone, driven by multiple failed relationships, episodes of jealousy, and frequent interpersonal conflict.  
+  His variability is also supported by his relatively high standard deviation in AFINN scores.
+
+---
+
+4. Supporting characters and their emotional positioning
+
+- Carol and Susan are more distant from the core group.  
+  Susan’s position may reflect her direct and sarcastic tone, often in contrast to Ross.  
+  Carol, though less emotionally extreme, is involved in conflict-heavy storylines such as co-parenting.
+  
+- Mr. and Mrs. Geller appear further away from the main group, which aligns with their detached and judgmental roles as parents, as well as their limited emotional presence in the show.
+
+- Mike, David, and Tag—romantic interests of Phoebe and Rachel—are distributed moderately close to the core group.  
+  Mike is positioned closer, which is consistent with his long-term involvement with Phoebe.  
+  David and Tag, having shorter appearances and lighter emotional arcs, appear more peripheral.
+
+- Gunther is positioned closer to Rachel and Ross, reflecting his continued emotional connection to Rachel and his consistent presence at Central Perk.
+
+- Janice and Frank are placed higher on the plot.  
+  Janice’s heightened emotional expression and distinctive speaking style may contribute to her separation.  
+  Frank shares some emotional similarity with Phoebe but plays a less central narrative role.
+
+---
+
+### Summary
+
+The PCA visualization reinforces previous clustering results:
+
+- The main characters are grouped closely, reflecting shared emotional tone and structure.
+- Joey and Phoebe demonstrate strong emotional alignment, particularly in positive sentiment.
+- Ross shows greater variability, consistent with his complex personal narrative.
+- Supporting characters are more dispersed, and their distance reflects both narrative relevance and emotional distinction.
+
+---
+
+### Conclusion
+
+This study conducted sentiment analysis using four lexicons—AFINN, Bing Liu, Loughran-McDonald, and NRC—and applied K-means clustering and principal component analysis to examine emotional profiles in the television series Friends. The results show that the six main characters maintain a highly correlated emotional structure across different sentiment dimensions, as evidenced by their proximity in both clustering and PCA visualization. Despite narrative differences in individual arcs, their emotional distributions remain consistently aligned, supporting the idea that their character development was intentionally designed to maintain group cohesion. This provides a quantitative basis for understanding how emotional dynamics contribute to the show's long-standing audience engagement and cohesive group identity.
+
+
 
 ## Relationship analysis based on association rules
 
