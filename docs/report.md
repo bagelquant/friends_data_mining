@@ -2,6 +2,21 @@
 title: "Data mining on Friends quotes"
 author: "Rajpreet Singh Samra, Yanzhong(Eric) Huang, Yongyi Tang"
 ---
+## Executive Summary
+
+This project explores the intricate relationships and emotional dynamics of the beloved characters from the iconic sitcom F.R.I.E.N.D.S. By leveraging advanced data mining techniques, we analyzed quotes from the show to uncover patterns of interaction, sentiment, and association among the six main characters. The analysis provides a unique perspective on the ensemble nature of the show and the emotional tapestry that binds its characters together. Key highlights include:
+
+- **Missing Data Handling**: Addressed inconsistencies in sentiment dictionaries using cosine similarity to estimate and fill missing values, ensuring a robust foundation for analysis.
+
+- **Sentiment Analysis and Clustering**: Quantified emotional tones of character quotes using sentiment lexicons, followed by PCA and k-means clustering to group characters based on emotional expressions, revealing distinct sentiment profiles.
+
+- **Character Relationships via Association Rules**: Treated conversations as transactional data to uncover strong relationships between characters. Key dynamics include Chandler and Monica's romantic bond, Joey's role as a social connector, and the frequent ensemble appearances of all six main characters.
+
+The findings highlight Joey Tribbiani as a central figure with strong associations across the group, reflecting his role as comic relief and a unifying presence. Romantic arcs like Ross and Rachel, and Monica and Chandler, are underscored by high mutual association. Phoebe Buffay's unique personality is evident in her relatively distinct interactions.
+
+This project celebrates the enduring appeal of F.R.I.E.N.D.S while showcasing the power of data mining to uncover hidden patterns in cultural phenomena. The insights gained offer a deeper appreciation of the show's storytelling and character development, making it a valuable case study for fans and data enthusiasts alike.
+
+\newpage
 
 ## Introduction
 
@@ -178,13 +193,17 @@ The results are quite interesting. For example, we can see that:
 - Phoebe appears at the last place for all other characters, which is quite interesting. It may reflect her unique personality and the fact that she often stands out from the group.
 - Joey has the highest average confidence level, which mean he probably has the most conversations with other characters. This is consistent with his character as the comic relief and the one who often interacts with others.
 
-### Frequent Itemsets
+### Other interesting rules
 
-The frequent itemsets provide additional insights into the dynamics of the group. For example:
+For Chandler and Monica couples, we could clearly see that they have a strong association with Joey, again Joey is the one who ofter appears in their conversations. This is consistent with the show, as Joey is often the one who brings them together and is involved in their relationship.
 
-- The group of six main characters (Monica, Joey, Chandler, Ross, Rachel, and Phoebe) frequently appears together in conversations, reflecting the ensemble nature of the show.
-- Smaller subsets, such as Monica and Chandler or Ross and Rachel, also appear frequently, highlighting key relationships within the group.
+| antecedents         | consequents | support  | confidence | lift     |
+|---------------------|-------------|----------|------------|----------|
+| (chandler, monica)  | (joey)      | 0.595035 | 0.874870   | 1.144310 |
+| (chandler, monica)  | (ross)      | 0.587234 | 0.863399   | 1.098730 |
+| (chandler, monica)  | (rachel)    | 0.581560 | 0.855057   | 1.088114 |
+| (chandler, monica)  | (phoebe)    | 0.578723 | 0.850886   | 1.169347 |
 
-### Conclusion
+## Conclusion
 
-The relationship analysis using association rules and frequent itemsets provides a quantitative perspective on the dynamics of FRIENDS characters. These findings align with the narrative arcs and character interactions depicted in the show, offering a data-driven validation of the relationships that fans have come to love.
+Balabala
