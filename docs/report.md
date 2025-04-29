@@ -78,7 +78,7 @@ For each missing entry, we first checked whether the word’s GloVe embedding wa
 
 `cosine_similarity(A, B) = (A · B) / (||A|| × ||B||)`
 
-where \( A \cdot B \) is the dot product, and \( ||A|| \) and \( ||B|| \) are their magnitudes.
+where `(A · B)` is the dot product, and `||A||` and `||B||` are their magnitudes.
 
 Using this method, for each missing `value`, we found the closest word and assigned its value score; for each missing `sentiment_x`, we assigned the most similar known sentiment label; and for each missing `sentiment_y`, which could have multiple emotions, we assigned the relevant list of emotion labels from the most semantically similar known word. After completing the imputations, we rounded the filled `value` scores to the nearest integer, clipped them within [-5, 5] for consistency, and handled the multi-label structure in `sentiment_y` carefully by later exploding it for analysis.
 
