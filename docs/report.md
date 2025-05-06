@@ -90,31 +90,31 @@ After imputing missing data, we cleaned the dataset further by removing duplicat
 
 We analyzed the distribution of AFINN `value` scores across different Loughran sentiment labels. Positive sentiments had positive values, and negative or uncertainty-related sentiments had negative values.
 
-![Figure 1: Value Distribution Across Sentiments (Loughran)](../figures/Sentiment1.png)
+![Value Distribution Across Sentiments (Loughran)](../figures/Sentiment1.png)
 
 #### Value Distribution Across Sentiment_X (Bing)
 
 We visualized how the AFINN `value` scores are distributed across positive and negative sentiment labels from Bing. There was a clear separation between positive and negative classes, validating the semantic consistency.
 
-![Figure 2: Value Distribution Across Sentiment_X (Bing)](../figures/sentiment2.png)
+![Value Distribution Across Sentiment_X (Bing)](../figures/sentiment2.png)
 
 #### Sentiment vs Sentiment_X Relationship
 
 We compared the categorical relationship between Loughran sentiments and Bing's positive/negative classification. As expected, positive Loughran words mostly mapped to Bing positive, and negative/uncertain terms mapped to Bing negative.
 
-![Figure 3: Sentiment vs Sentiment_X](../figures/sentiment3.png)
+![Sentiment vs Sentiment_X](../figures/sentiment3.png)
 
 #### Value Distribution Across Sentiment_Y (NRC Emotions)
 
 The boxplot showed that negative emotions (fear, anger, sadness) had lower `value` scores, and positive emotions (joy, trust, anticipation) had higher `value` scores, confirming correct imputation.
 
-![Figure 4: Value Distribution Across Sentiment_Y (NRC Emotions)](../figures/sentiment4.png)
+![Value Distribution Across Sentiment_Y (NRC Emotions)](../figures/sentiment4.png)
 
 #### Sentiment_Y vs Sentiment_X Alignment
 
 Finally, the comparison of NRC emotional sentiments (`sentiment_y`) and Bing polarity (`sentiment_x`) revealed logical associations. Negative emotions aligned with negative sentiment, and positive emotions aligned with positive sentiment.
 
-![Figure 5: Sentiment_Y vs Sentiment_X](../figures/sentiment5.png)
+![Sentiment_Y vs Sentiment_X](../figures/sentiment5.png)
 
 ## Sentiment analysis
 
@@ -176,9 +176,9 @@ We analyzed AFINN sentiment scores across seasons for each character, focusing o
 
 #### 1. Average AFINN Score Across Seasons
 
-![Figure 6: Average AFINN score of each character across seasons (Bar Chart)](../figures/AFINN_mean_bar.png)
+![Average AFINN score of each character across seasons (Bar Chart)](../figures/AFINN_mean_bar.png)
 
-![Figure 7: Average AFINN score of each character across seasons (Line Plot)](../figures/AFINN_mean_line.png)
+![Average AFINN score of each character across seasons (Line Plot)](../figures/AFINN_mean_line.png)
 
 Observations:
 
@@ -190,9 +190,9 @@ Observations:
 
 #### 2. Standard Deviation of AFINN Score Across Seasons
 
-![Figure 8: Standard deviation of AFINN score across seasons (Bar Chart)  ](../figures/AFINN_std_bar.png)
+![Standard deviation of AFINN score across seasons (Bar Chart)  ](../figures/AFINN_std_bar.png)
 
-![Figure 9: Standard deviation of AFINN score across seasons (Line Plot)   ](../figures/AFINN_std_line.png)
+![Standard deviation of AFINN score across seasons (Line Plot)   ](../figures/AFINN_std_line.png)
 
 Observations:
 
@@ -212,7 +212,7 @@ Observations:
 
 ### Sentiment Distribution Based on Bing Liu's Dictionary
 
->![Figure 10: Positive and Negative sentiment proportions per character (Bing Dictionary Analysis)](../figures/BingLiu.png)
+>![Positive and Negative sentiment proportions per character (Bing Dictionary Analysis)](../figures/BingLiu.png)
 
 Observations:
 
@@ -230,7 +230,7 @@ Observations:
 
 ### Sentiment Distribution Based on Loughran-McDonald Dictionary
 
->![Figure 11: Sentiment category proportions per character (Loughran-McDonald Dictionary Analysis)](../figures/LoughranMcDonald.png)
+>![Sentiment category proportions per character (Loughran-McDonald Dictionary Analysis)](../figures/LoughranMcDonald.png)
 
 Observations:
 
@@ -249,7 +249,7 @@ Observations:
 
 ### Sentiment Distribution Based on NRC Emotion Lexicon
 
->![Figure 12: Emotion category proportions per character (NRC Dictionary Analysis)](../figures/NRC.png)
+>![Emotion category proportions per character (NRC Dictionary Analysis)](../figures/NRC.png)
 
 Observations:
 
@@ -355,7 +355,7 @@ The features used included combined outputs from the AFINN, Bing Liu, Loughran-M
 - Main characters: Joey, Phoebe, Monica, Chandler, Ross, Rachel  
 - Supporting roles: Susan, Carol, Frank, Janice, Richard, David, Mike, Tag, Gunther, Mr. Geller, Mrs. Geller
 
->![Figure 13: PCA Scatter Plot of Character Emotional Profiles  ](../figures/PCA.png)
+>![PCA Scatter Plot of Character Emotional Profiles  ](../figures/PCA.png)
 
 #### Interpretation of the PCA Plot
 
